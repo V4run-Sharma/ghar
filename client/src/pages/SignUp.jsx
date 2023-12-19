@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
@@ -36,9 +36,21 @@ const SignUp = () => {
     }
   };
 
+  useEffect(() => {
+    let timer;
+    if (error) {
+      timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [error]);
+
   return (
     <div className="p-3 max-w-lg mx-auto mt-12">
-      <h1 className="text-3xl text-center font-bold my-7">Sign Up</h1>
+      <h1 className="text-3xl text-center text-[1a120b] font-bold my-7">
+        Sign Up
+      </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           type="text"
@@ -66,14 +78,16 @@ const SignUp = () => {
         />
         <button
           disabled={loading}
-          className="bg-[#0c0f3b] text-white rounded-lg p-3 transition-all ease-in-out hover:opacity-80 disabled:opacity-50">
+          className="bg-[#3c2a21] text-white rounded-lg p-3 transition-all ease-in-out hover:opacity-80 disabled:opacity-50">
           {loading ? "SIGNING UP..." : "SIGN UP"}
         </button>
       </form>
       <div className="flex gap-2 pt-2">
         <p>Have an account?</p>
         <Link to={"/sign-in"}>
-          <span className="text-blue-700 font-semibold">Sign In</span>
+          <span className="text-[#3c2a21] opacity-80 font-semibold">
+            Sign In
+          </span>
         </Link>
       </div>
       {error && <p className="text-red-600">{error}</p>}
