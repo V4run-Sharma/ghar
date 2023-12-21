@@ -6,6 +6,7 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import GoogleOAuth from "../components/GoogleOAuth";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({});
@@ -71,16 +72,19 @@ const SignIn = () => {
           className="border p-3 rounded-lg"
           id="password"
         />
-        <button
-          disabled={loading}
-          className="bg-[#3c2a21] text-white rounded-lg p-3 transition-all ease-in-out hover:opacity-80 disabled:opacity-50">
-          {loading ? "SIGNING IN..." : "SIGN IN"}
-        </button>
+        <div className="flex justify-center items-center gap-4">
+          <button
+            disabled={loading}
+            className="bg-[#3c2a21] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
+            {loading ? "SIGNING IN..." : "SIGN IN"}
+          </button>
+          <GoogleOAuth />
+        </div>
       </form>
       <div className="flex gap-2 pt-2">
         <p>Don't have an account?</p>
         <Link to={"/sign-up"}>
-          <span className="text-[#3c2a21] opacity-80 font-semibold">
+          <span className="text-[#3c2a21] opacity-80 font-semibold underline">
             Sign Up
           </span>
         </Link>
