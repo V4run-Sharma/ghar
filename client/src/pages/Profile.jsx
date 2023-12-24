@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { app } from "../firebase.js";
 import {
   getDownloadURL,
@@ -12,6 +13,9 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
 } from "../redux/user/userSlice.js";
 
 const Profile = () => {
@@ -23,6 +27,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (file) {
@@ -57,7 +62,7 @@ const Profile = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleUpdateUser = async (e) => {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
@@ -80,6 +85,35 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+      navigate("/sign-in");
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
+    }
+  };
+
+  useEffect(() => {
+    let timer;
+    if (error) {
+      timer = setTimeout(() => {
+        dispatch(updateUserFailure(null));
+        dispatch(deleteUserFailure(null));
+      }, 5000);
+    }
+    return () => clearTimeout(timer);
+  }, [error]);
+
   // Firebase Storage Rules
   // allow read;
   // allow write: if
@@ -91,7 +125,7 @@ const Profile = () => {
       <h1 className="text-3xl text-center text-[#1a120b] font-bold my-4">
         Profile
       </h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleUpdateUser} className="flex flex-col gap-4">
         <input
           type="file"
           ref={fileRef}
@@ -146,7 +180,9 @@ const Profile = () => {
         </div>
       </form>
       <div className="flex text-white justify-between pt-4">
-        <p className="bg-red-600 px-4 py-2 rounded-lg hover:opacity-80 cursor-pointer">
+        <p
+          onClick={handleDeleteUser}
+          className="bg-red-600 px-4 py-2 rounded-lg hover:opacity-80 cursor-pointer">
           Delete Account
         </p>
         <p className="bg-red-600 px-4 py-2 rounded-lg hover:opacity-80 cursor-pointer">
