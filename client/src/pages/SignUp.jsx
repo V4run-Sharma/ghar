@@ -49,7 +49,7 @@ const SignUp = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto mt-24">
-      <h1 className="text-3xl text-center text-[1a120b] font-bold my-7">
+      <h1 className="text-3xl text-center text-[#1a120b] font-bold my-7">
         Sign Up
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">

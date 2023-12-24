@@ -19,7 +19,7 @@ const Header = () => {
           />
           <FaSearch className="text-[#3c2a21] text-xl" />
         </form>
-        <ul className="text-[#e5e5cb] flex items-center gap-8">
+        <ul className="text-[#e5e5cb] flex items-center sm:gap-8">
           <Link to="/">
             <li className="hidden sm:inline cursor-pointer hover:underline  hover:text-white">
               Home
