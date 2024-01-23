@@ -52,7 +52,7 @@ const SignIn = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto mt-24">
-      <h1 className="text-3xl text-center text-[#1a120b] font-bold my-7">
+      <h1 className="text-3xl text-center text-[#1f2249] font-bold my-7">
         Sign In
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -75,7 +75,7 @@ const SignIn = () => {
         <div className="flex justify-center items-center gap-4">
           <button
             disabled={loading}
-            className="bg-[#3c2a21] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
+            className="bg-[#1f2249] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
             {loading ? "SIGNING IN..." : "SIGN IN"}
           </button>
           <GoogleOAuth />
@@ -84,7 +84,7 @@ const SignIn = () => {
       <div className="flex gap-2 pt-2">
         <p>Don't have an account?</p>
         <Link to={"/sign-up"}>
-          <span className="text-[#3c2a21] opacity-80 font-semibold underline">
+          <span className="text-[#1f2249] opacity-80 font-semibold hover:underline">
             Sign Up
           </span>
         </Link>

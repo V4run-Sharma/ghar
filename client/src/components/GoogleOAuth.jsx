@@ -33,7 +33,7 @@ const GoogleOAuth = () => {
     <button type="button" onClick={handleGoogleClick}>
       <FcGoogle
         size={48}
-        className="p-2 rounded-lg bg-[#3c2a21] cursor-pointer transition-all ease-in-out hover:opacity-80"
+        className="p-2 rounded-lg border-[#cbd4e5] border-2 bg-zinc-300 bg-opacity-40 cursor-pointer transition-all ease-in-out hover:bg-transparent"
       />
     </button>
   );

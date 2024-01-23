@@ -122,7 +122,7 @@ const Profile = () => {
 
   return (
     <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center text-[#1a120b] font-bold my-4">
+      <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
         Profile
       </h1>
       <form onSubmit={handleUpdateUser} className="flex flex-col gap-4">
@@ -174,7 +174,7 @@ const Profile = () => {
         <div className="flex flex-col justify-center items-center gap-4">
           <button
             disabled={loading}
-            className="bg-[#3c2a21] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
+            className="bg-[#1f2249] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
             {loading ? "UPDATING..." : "UPDATE"}
           </button>
         </div>
