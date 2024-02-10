@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import listingRoutes from "./routes/listingRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,7 @@ mongoose
 //---------------------------------------------------------------------------------------
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/listings", listingRoutes);
 //---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
