@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { app } from "../firebase.js";
 import {
   getDownloadURL,
@@ -139,7 +139,7 @@ const Profile = () => {
   // request.resource.contentType.matches('image/.*')
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
+    <main className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
         Profile
       </h1>
@@ -189,14 +189,17 @@ const Profile = () => {
           className="border p-3 rounded-lg"
           id="password"
         />
-        <div className="flex flex-col justify-center items-center gap-4">
-          <button
-            disabled={loading}
-            className="bg-[#1f2249] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
-            {loading ? "UPDATING..." : "UPDATE"}
-          </button>
-        </div>
+        <button
+          disabled={loading}
+          className="bg-[#1f2249] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
+          {loading ? "UPDATING..." : "UPDATE"}
+        </button>
       </form>
+      <Link to="/listings/create">
+        <button className="bg-green-600 text-white rounded-lg p-3 mt-3 transition-all w-full ease-in-out hover:opacity-80">
+          Create Listing
+        </button>
+      </Link>
       <div className="flex text-white justify-between pt-4">
         <p
           onClick={handleDeleteUser}
@@ -213,7 +216,7 @@ const Profile = () => {
       <p className="text-green-600 text-center text-lg">
         {updateSuccess ? "Updated" : null}
       </p>
-    </div>
+    </main>
   );
 };
 

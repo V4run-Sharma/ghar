@@ -51,7 +51,7 @@ const SignIn = () => {
   }, [error]);
 
   return (
-    <div className="p-3 max-w-lg mx-auto mt-24">
+    <main className="p-3 max-w-lg mx-auto mt-24">
       <h1 className="text-3xl text-center text-[#1f2249] font-bold my-7">
         Sign In
       </h1>
@@ -90,7 +90,7 @@ const SignIn = () => {
         </Link>
       </div>
       {error && <p className="text-red-600 text-lg font-semibold">{error}</p>}
-    </div>
+    </main>
   );
 };
 
