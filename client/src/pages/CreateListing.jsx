@@ -1,8 +1,88 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 
 const CreateListing = () => {
-  const [uploading, isUploading] = useState(false);
-  const [creating, isCreating] = useState(false);
+  const [images, setImages] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageUploadError, setImageUploadError] = useState();
+  const [isCreating, setIsCreating] = useState(false);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+  });
+
+  const handleImageUpload = (e) => {
+    if (images.length > 0 && images.length + formData.imageUrls.length < 7) {
+      setIsUploading(true);
+      setImageUploadError(null);
+      const promises = [];
+      for (let i = 0; i < images.length; i++) {
+        promises.push(storeImage(images[i]));
+      }
+      Promise.all(promises)
+        .then((urls) => {
+          setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.concat(urls),
+          });
+          setImageUploadError(null);
+          isUploading(false);
+        })
+        .catch((error) => {
+          setImageUploadError("Image upload failed (2mb per image max).");
+          setIsUploading(false);
+        });
+      setImageUploadError("Success.");
+    } else {
+      setImageUploadError("You can only upload 6 images per listing.");
+    }
+  };
+
+  const storeImage = async (image) => {
+    setIsUploading(true);
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + "-" + image.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        },
+        (error) => {
+          setIsUploading(false);
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
+
+  const handleImageDelete = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    });
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setImageUploadError(null);
+      setIsUploading(false);
+      setIsCreating(false);
+    }, 5000);
+  });
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
@@ -37,7 +117,7 @@ const CreateListing = () => {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="appearance-none w-5 h-5 border-2 hover:border-blue-500 rounded-md bg-white checked:bg-blue-500 cursor-pointer"
+                className="appearance-none w-5 h-5 border-2 hover:border-[#1f2249] rounded-md bg-white checked:bg-[#1f2249] transition-all ease-in-out cursor-pointer"
                 id="sale"
               />
               <span>Sell</span>
@@ -45,7 +125,7 @@ const CreateListing = () => {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="appearance-none w-5 h-5 border-2 hover:border-blue-500 rounded-md bg-white checked:bg-blue-500 cursor-pointer"
+                className="appearance-none w-5 h-5 border-2 hover:border-[#1f2249] rounded-md bg-white checked:bg-[#1f2249] transition-all ease-in-out cursor-pointer"
                 id="rent"
               />
               <span>Rent</span>
@@ -53,7 +133,7 @@ const CreateListing = () => {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="appearance-none w-5 h-5 border-2 hover:border-blue-500 rounded-md bg-white checked:bg-blue-500 cursor-pointer"
+                className="appearance-none w-5 h-5 border-2 hover:border-[#1f2249] rounded-md bg-white checked:bg-[#1f2249] transition-all ease-in-out cursor-pointer"
                 id="parking"
               />
               <span>Parking Spot</span>
@@ -61,7 +141,7 @@ const CreateListing = () => {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="appearance-none w-5 h-5 border-2 hover:border-blue-500 rounded-md bg-white checked:bg-blue-500 cursor-pointer"
+                className="appearance-none w-5 h-5 border-2 hover:border-[#1f2249] rounded-md bg-white checked:bg-[#1f2249] transition-all ease-in-out cursor-pointer"
                 id="furnished"
               />
               <span>Furnished</span>
@@ -69,7 +149,7 @@ const CreateListing = () => {
             <div className="flex items-center gap-2">
               <input
                 type="checkbox"
-                className="appearance-none w-5 h-5 border-2 hover:border-blue-500 rounded-md bg-white checked:bg-blue-500 cursor-pointer"
+                className="appearance-none w-5 h-5 border-2 hover:border-[#1f2249] rounded-md bg-white checked:bg-[#1f2249] transition-all ease-in-out cursor-pointer"
                 id="offer"
               />
               <span>Offer</span>
@@ -132,27 +212,58 @@ const CreateListing = () => {
           <p className="font-semibold">
             Images:
             <span className="font-normal ml-2">
-              The first image will be the cover (max 6).
+              The first image will be the cover (size &lt; 2mb, max 6 images).
             </span>
           </p>
           <div className="flex gap-2">
             <input
               type="file"
+              onChange={(e) => setImages(e.target.files)}
               className="p-3 border rounded-lg w-full file:bg-white file:border file:rounded-md hover:file:bg-[#1f2249] hover:file:text-white file:transition-all file:ease-in-out file:mr-2"
               id="images"
               accept="image/*"
               multiple
             />
             <button
-              disabled={uploading || creating}
-              className="p-3 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white disabled:bg-green-600 disabled:text-white disabled:opacity-50">
-              {uploading ? "Uploading..." : "Upload"}
+              type="button"
+              onClick={handleImageUpload}
+              disabled={isUploading || isCreating}
+              className="p-3 border border-green-600 rounded-lg hover:bg-green-600 hover:text-white transition-all ease-in-out disabled:bg-green-600 disabled:text-white disabled:opacity-50">
+              {isUploading ? "Uploading..." : "Upload"}
             </button>
           </div>
+          <p
+            className={
+              imageUploadError == "Success." ? "text-green-600" : "text-red-600"
+            }>
+            {imageUploadError
+              ? imageUploadError
+              : imageUploadError == null || imageUploadError == "Success"
+              ? ""
+              : "Uploaded Successfully!"}
+          </p>
+          {formData.imageUrls.length > 0 &&
+            formData.imageUrls.map((url, index) => (
+              <div
+                key={url}
+                className="flex w-full justify-between items-center">
+                <img
+                  src={url}
+                  alt="listing image"
+                  className="lg:w-80 md:w-60 w-40 rounded-lg object-contain"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleImageDelete(index)}
+                  className="p-3 rounded-lg text-white bg-red-600 h-fit hover:opacity-80">
+                  Delete
+                </button>
+              </div>
+            ))}
           <button
-            disabled={creating}
+            disabled={isCreating || isUploading}
             className="p-3 border border-[#1f2249] rounded-lg bg-[#1f2249] text-white hover:opacity-80 transition-all ease-in-out disabled:opacity-50">
-            {creating ? "CREATING LISTING..." : "CREATE LISTING"}
+            {isCreating ? "CREATING LISTING..." : "CREATE LISTING"}
           </button>
         </div>
       </form>
