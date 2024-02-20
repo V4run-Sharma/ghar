@@ -29,6 +29,9 @@ const Profile = () => {
   const [uploadError, setUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([{}]);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -121,12 +124,37 @@ const Profile = () => {
     }
   };
 
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
+      const data = await res.json();
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+      setUserListings(data);
+    } catch (error) {
+      setShowListingsError(true);
+    }
+  };
+
+  function truncateDescription(description, lines) {
+    const words = description.split(" ");
+    const truncatedWords = words.slice(0, lines * 5); // Assuming average 5 words per line
+    return (
+      truncatedWords.join(" ") +
+      (words.length > truncatedWords.length ? "..." : "")
+    );
+  }
+
   useEffect(() => {
     let timer;
     if (error) {
       timer = setTimeout(() => {
         dispatch(updateUserFailure(null));
         dispatch(deleteUserFailure(null));
+        setUpdateSuccess(false);
       }, 5000);
     }
     return () => clearTimeout(timer);
@@ -139,11 +167,13 @@ const Profile = () => {
   // request.resource.contentType.matches('image/.*')
 
   return (
-    <main className="p-3 max-w-lg mx-auto">
+    <main className="p-3 max-w-lg mx-auto flex flex-col justify-center">
       <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
         Profile
       </h1>
-      <form onSubmit={handleUpdateUser} className="flex flex-col gap-4">
+      <form
+        onSubmit={handleUpdateUser}
+        className="flex flex-col gap-4 min-w-full">
         <input
           type="file"
           ref={fileRef}
@@ -195,16 +225,19 @@ const Profile = () => {
           {loading ? "UPDATING..." : "UPDATE"}
         </button>
       </form>
-      <Link to="/listings/create">
-        <button className="bg-green-600 text-white rounded-lg p-3 mt-3 transition-all w-full ease-in-out hover:opacity-80">
+      <Link to="/listings/create" className="min-w-full">
+        <button className="bg-green-600 text-white rounded-lg p-3 mt-4 transition-all min-w-full ease-in-out hover:opacity-80">
           Create Listing
         </button>
       </Link>
-      <div className="flex text-white justify-between pt-4">
+      <div className="flex text-white min-w-full justify-between items-center mt-4">
         <p
           onClick={handleDeleteUser}
           className="bg-red-600 px-4 py-2 rounded-lg hover:opacity-80 cursor-pointer">
           Delete Account
+        </p>
+        <p className="text-green-600 text-center text-lg animate-fade">
+          {updateSuccess ? "Updated" : ""}
         </p>
         <p
           onClick={handleSignOut}
@@ -213,9 +246,43 @@ const Profile = () => {
         </p>
       </div>
       <p className="text-red-600 text-center text-lg">{error ? error : null}</p>
-      <p className="text-green-600 text-center text-lg">
-        {updateSuccess ? "Updated" : null}
+      <button
+        onClick={handleShowListings}
+        className="bg-[#1f2249] mt-4 py-2 px-4 rounded-lg text-white transition-all ease-in-out hover:opacity-80">
+        Show Listings
+      </button>
+      <p className="text-red-600 text-center text-lg">
+        {showListingsError ? showListingsError : null}
       </p>
+      {userListings && userListings.length > 0 && (
+        <div className="flex flex-col min-w-full gap-4 mt-4">
+          {userListings.map((listing) => (
+            <div
+              key={listing._id}
+              className="flex sm:flex-row flex-col gap-4 bg-[#1f2249] p-4 rounded-lg cursor-pointer hover:opacity-80">
+              <img
+                src={listing.imageUrls}
+                alt={listing.title}
+                className="sm:w-[40%] w-full object-cover rounded-lg"
+              />
+              <div className="flex flex-col justify-between">
+                <div>
+                  <h3 className="text-white text-lg">{listing.name}</h3>
+                  <p className="text-white text-xs">({listing.type})</p>
+                  <p className="text-white text-xs opacity-80 leading-5">
+                    {truncateDescription(listing.description, 3)}
+                  </p>
+                </div>
+                <p className="text-white text-lg">
+                  {listing.type === "sale"
+                    ? `₹ ${listing.discountedPrice}`
+                    : `₹ ${listing.discountedPrice} per month`}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 };
