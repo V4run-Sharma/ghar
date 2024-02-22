@@ -31,6 +31,7 @@ const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([{}]);
+  const [areListingsVisible, setAreListingsVisible] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -137,16 +138,40 @@ const Profile = () => {
     } catch (error) {
       setShowListingsError(true);
     }
+    handleShowListingsDiv();
   };
 
-  function truncateDescription(description, lines) {
-    const words = description.split(" ");
-    const truncatedWords = words.slice(0, lines * 5); // Assuming average 5 words per line
-    return (
-      truncatedWords.join(" ") +
-      (words.length > truncatedWords.length ? "..." : "")
-    );
-  }
+  const handleShowListingsDiv = () => {
+    const div = document.getElementById("user-listings");
+
+    if (div.classList.contains("hidden")) {
+      div.classList.add("flex");
+      div.classList.add("flex-col");
+      div.classList.remove("hidden");
+      setAreListingsVisible(true);
+    } else if (div.classList.contains("flex")) {
+      div.classList.remove("flex");
+      div.classList.remove("flex-col");
+      div.classList.add("hidden");
+      setAreListingsVisible(false);
+    }
+  };
+
+  const handleDeleteListing = async (id) => {
+    try {
+      const res = await fetch(`/api/listings/delete/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setUserListings((prev) => prev.filter((listing) => listing._id !== id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
     let timer;
@@ -168,121 +193,138 @@ const Profile = () => {
 
   return (
     <main className="p-3 max-w-lg mx-auto flex flex-col justify-center">
-      <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
-        Profile
-      </h1>
-      <form
-        onSubmit={handleUpdateUser}
-        className="flex flex-col gap-4 min-w-full">
-        <input
-          type="file"
-          ref={fileRef}
-          onChange={(e) => setFile(e.target.files[0])}
-          hidden
-          accept="image/*"
-        />
-        <img
-          onClick={() => fileRef.current.click()}
-          src={formData.avatar || currentUser.avatar}
-          alt="avatar"
-          className="w-24 h-24 rounded-full mx-auto cursor-pointer"
-        />
-        <p className="text-center text-xs">
-          {uploadError ? (
-            <span className="text-red-600">Upload Error</span>
-          ) : uploadProgress > 0 && uploadProgress < 100 ? (
-            <span className="text-zinc-800">{`Uploading ${uploadProgress}%`}</span>
-          ) : uploadProgress === 100 ? (
-            <span className="text-green-600 ">Uploaded</span>
-          ) : null}
-        </p>
-        <input
-          type="text"
-          placeholder="Username"
-          defaultValue={currentUser.username}
-          onChange={handleChange}
-          className="border p-3 rounded-lg"
-          id="username"
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          defaultValue={currentUser.email}
-          onChange={handleChange}
-          className="border p-3 rounded-lg"
-          id="email"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-          className="border p-3 rounded-lg"
-          id="password"
-        />
-        <button
-          disabled={loading}
-          className="bg-[#1f2249] text-white rounded-lg p-3 transition-all w-full ease-in-out hover:opacity-80 disabled:opacity-50">
-          {loading ? "UPDATING..." : "UPDATE"}
-        </button>
-      </form>
-      <Link to="/listings/create" className="min-w-full">
-        <button className="bg-green-600 text-white rounded-lg p-3 mt-4 transition-all min-w-full ease-in-out hover:opacity-80">
-          Create Listing
-        </button>
-      </Link>
-      <div className="flex text-white min-w-full justify-between items-center mt-4">
-        <p
-          onClick={handleDeleteUser}
-          className="bg-red-600 px-4 py-2 rounded-lg hover:opacity-80 cursor-pointer">
-          Delete Account
-        </p>
-        <p className="text-green-600 text-center text-lg animate-fade">
-          {updateSuccess ? "Updated" : ""}
-        </p>
-        <p
-          onClick={handleSignOut}
-          className="bg-red-600 px-4 py-2 rounded-lg hover:opacity-80 cursor-pointer">
-          Sign Out
+      <div className="p-3 max-w-lg flex flex-col justify-center">
+        <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
+          Profile
+        </h1>
+        <form
+          onSubmit={handleUpdateUser}
+          className="flex flex-col gap-4 max-w-lg">
+          <input
+            type="file"
+            ref={fileRef}
+            onChange={(e) => setFile(e.target.files[0])}
+            hidden
+            accept="image/*"
+          />
+          <img
+            onClick={() => fileRef.current.click()}
+            src={formData.avatar || currentUser.avatar}
+            alt="avatar"
+            className="w-24 h-24 rounded-full mx-auto cursor-pointer"
+          />
+          <p className="text-center text-xs">
+            {uploadError ? (
+              <span className="text-red-600">Upload Error</span>
+            ) : uploadProgress > 0 && uploadProgress < 100 ? (
+              <span className="text-zinc-800">{`Uploading ${uploadProgress}%`}</span>
+            ) : uploadProgress === 100 ? (
+              <span className="text-green-600 ">Uploaded</span>
+            ) : null}
+          </p>
+          <input
+            type="text"
+            placeholder="Username"
+            defaultValue={currentUser.username}
+            onChange={handleChange}
+            className="border p-3 rounded-lg min-w-full"
+            id="username"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            defaultValue={currentUser.email}
+            onChange={handleChange}
+            className="border p-3 rounded-lg min-w-full"
+            id="email"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            className="border p-3 rounded-lg min-w-full"
+            id="password"
+          />
+          <button
+            disabled={loading}
+            className="bg-[#1f2249] text-white rounded-lg p-3 transition-all min-w-full ease-in-out hover:opacity-80 disabled:opacity-50">
+            {loading ? "UPDATING..." : "UPDATE"}
+          </button>
+        </form>
+        <div className="flex flex-wrap justify-between text-white mt-4">
+          <p
+            onClick={handleDeleteUser}
+            className="bg-red-600 px-4 py-2 w-fit h-fit rounded-lg hover:opacity-80 cursor-pointer">
+            Delete Account
+          </p>
+          <p className="text-green-600 text-center text-lg animate-fade">
+            {updateSuccess ? "Updated" : ""}
+          </p>
+          <p
+            onClick={handleSignOut}
+            className="bg-red-600 px-4 py-2 w-fit rounded-lg hover:opacity-80 cursor-pointer">
+            Sign Out
+          </p>
+        </div>
+        <p className="text-red-600 text-center text-lg">
+          {error ? error : null}
         </p>
       </div>
-      <p className="text-red-600 text-center text-lg">{error ? error : null}</p>
-      <button
-        onClick={handleShowListings}
-        className="bg-[#1f2249] mt-4 py-2 px-4 rounded-lg text-white transition-all ease-in-out hover:opacity-80">
-        Show Listings
-      </button>
-      <p className="text-red-600 text-center text-lg">
-        {showListingsError ? showListingsError : null}
-      </p>
-      {userListings && userListings.length > 0 && (
-        <div className="flex flex-col min-w-full gap-4 mt-4">
-          {userListings.map((listing) => (
-            <div
-              key={listing._id}
-              className="flex sm:flex-row flex-col gap-4 bg-[#1f2249] p-4 rounded-lg cursor-pointer hover:opacity-80">
-              <img
-                src={listing.imageUrls}
-                alt={listing.title}
-                className="sm:w-[40%] w-full object-cover rounded-lg"
-              />
-              <div className="flex flex-col justify-between">
-                <div>
-                  <h3 className="text-white text-lg">{listing.name}</h3>
-                  <p className="text-white text-xs">({listing.type})</p>
-                  <p className="text-white text-xs opacity-80 leading-5">
-                    {truncateDescription(listing.description, 3)}
-                  </p>
+      <div className="p-3 max-w-lg flex flex-col ">
+        <Link to="/listings/create" className="min-w-full">
+          <button className="bg-green-600 text-white rounded-lg p-3 transition-all min-w-full ease-in-out hover:opacity-80">
+            Create Listing
+          </button>
+        </Link>
+        <button
+          id="show-listings-button"
+          onClick={handleShowListings}
+          className="bg-[#1f2249] mt-4 py-2 min-w-full px-4 rounded-lg text-white transition-all ease-in-out hover:opacity-80">
+          {areListingsVisible ? "Hide Listings" : "Show Listings"}
+        </button>
+        <p className="text-red-600 text-center text-lg">
+          {showListingsError ? showListingsError : null}
+        </p>
+        {userListings && userListings.length > 0 && (
+          <div id="user-listings" className={`hidden min-w-full gap-4 mt-4`}>
+            {userListings.map((listing) => (
+              <div
+                key={listing._id}
+                id={listing._id}
+                className="flex sm:flex-row flex-col sm:justify-between items-center hover:bg-white gap-4 border-[1px] border-gray-300 hover:border-[#1f2249] transition-all ease-in-out p-3 rounded-lg cursor-pointer">
+                <div className="flex sm:flex-row flex-col gap-4">
+                  <img
+                    src={listing.imageUrls}
+                    alt={listing.title}
+                    className="sm:w-[30%] w-full object-contain"
+                  />
+                  <div className="flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-lg">{listing.name}</h3>
+                      <p className="text-xs">{listing.type}</p>
+                    </div>
+                    <p className="text-white text-lg">
+                      {listing.type === "sale"
+                        ? `₹ ${listing.discountedPrice}`
+                        : `₹ ${listing.discountedPrice} per month`}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-white text-lg">
-                  {listing.type === "sale"
-                    ? `₹ ${listing.discountedPrice}`
-                    : `₹ ${listing.discountedPrice} per month`}
-                </p>
+                <div className="flex flex-row sm:flex-col w-full sm:w-fit justify-between gap-2">
+                  <button className="px-4 py-2 rounded-lg bg-[#1f2249] hover:opacity-80 transition-all ease-in-out text-white">
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteListing(listing._id)}
+                    className="px-4 py-2 rounded-lg bg-red-600 hover:opacity-80 transition-all ease-in-out text-white">
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </main>
   );
 };
