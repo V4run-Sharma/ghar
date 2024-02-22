@@ -291,29 +291,31 @@ const Profile = () => {
               <div
                 key={listing._id}
                 id={listing._id}
-                className="flex sm:flex-row flex-col sm:justify-between items-center hover:bg-white gap-4 border-[1px] border-gray-300 hover:border-[#1f2249] transition-all ease-in-out p-3 rounded-lg cursor-pointer">
-                <div className="flex sm:flex-row flex-col gap-4">
+                className="flex sm:flex-row break-words flex-col sm:justify-between items-center hover:bg-white gap-4 border-[1px] border-gray-300 hover:border-[#1f2249] transition-all ease-in-out p-3 rounded-lg cursor-pointer box-border">
+                <div className="flex sm:flex-row box-border flex-col gap-4">
                   <img
                     src={listing.imageUrls}
                     alt={listing.title}
-                    className="sm:w-[30%] w-full object-contain"
+                    className="sm:w-[30%] max-w-full object-cover"
                   />
                   <div className="flex flex-col justify-between">
-                    <div>
+                    <div className="">
                       <h3 className="text-lg">{listing.name}</h3>
                       <p className="text-xs">{listing.type}</p>
                     </div>
-                    <p className="text-white text-lg">
+                    <p className="text-lg">
                       {listing.type === "sale"
-                        ? `₹ ${listing.discountedPrice}`
-                        : `₹ ${listing.discountedPrice} per month`}
+                        ? `₹${listing.discountedPrice}`
+                        : `₹${listing.discountedPrice} per month`}
                     </p>
                   </div>
                 </div>
-                <div className="flex flex-row sm:flex-col w-full sm:w-fit justify-between gap-2">
-                  <button className="px-4 py-2 rounded-lg bg-[#1f2249] hover:opacity-80 transition-all ease-in-out text-white">
-                    Edit
-                  </button>
+                <div className="flex flex-row sm:flex-col w-full sm:w-fit justify-between items-center  gap-2">
+                  <Link
+                    to={`/listings/update/${listing._id}`}
+                    className="px-4 py-2 rounded-lg bg-[#1f2249] hover:opacity-80 w-fit transition-all ease-in-out text-white">
+                    <button>Edit</button>
+                  </Link>
                   <button
                     onClick={() => handleDeleteListing(listing._id)}
                     className="px-4 py-2 rounded-lg bg-red-600 hover:opacity-80 transition-all ease-in-out text-white">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import {
   getDownloadURL,
@@ -9,8 +9,9 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 
-const CreateListing = () => {
+const UpdateListing = () => {
   const navigate = useNavigate();
+  const params = useParams();
   const [images, setImages] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [imageUploadError, setImageUploadError] = useState();
@@ -31,6 +32,21 @@ const CreateListing = () => {
     offer: false,
     imageUrls: [],
   });
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listings/get/${listingId}`);
+      const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        navigate("/listings");
+        return;
+      }
+      setFormData(data);
+    };
+    fetchListing();
+  }, []);
 
   const handleImageUpload = (e) => {
     if (images.length > 0 && images.length + formData.imageUrls.length < 7) {
@@ -125,7 +141,7 @@ const CreateListing = () => {
     try {
       setIsCreating(true);
       setError(false);
-      const res = await fetch("/api/listings/create", {
+      const res = await fetch(`/api/listings/update/${params.listingId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -150,7 +166,7 @@ const CreateListing = () => {
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
-        Create Listing
+        Update Listing
       </h1>
       <form
         onSubmit={handleSubmit}
@@ -352,7 +368,7 @@ const CreateListing = () => {
           <button
             disabled={isCreating || isUploading}
             className="p-3 border border-[#1f2249] rounded-lg bg-[#1f2249] text-white hover:opacity-80 transition-all ease-in-out disabled:opacity-50">
-            {isCreating ? "CREATING..." : "CREATE LISTING"}
+            {isCreating ? "UPDATING..." : "UPDATE LISTING"}
           </button>
           {error && <p className="text-red-600 text-sm">{error}</p>}
         </div>
@@ -361,4 +377,4 @@ const CreateListing = () => {
   );
 };
 
-export default CreateListing;
+export default UpdateListing;
