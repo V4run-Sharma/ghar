@@ -300,7 +300,11 @@ const Profile = () => {
                   />
                   <div className="flex flex-col justify-between">
                     <div className="">
-                      <h3 className="text-lg">{listing.name}</h3>
+                      <Link to={`/listings/${listing._id}`}>
+                        <h3 className="text-lg hover:underline">
+                          {listing.name}
+                        </h3>
+                      </Link>
                       <p className="text-xs">{listing.type}</p>
                     </div>
                     <p className="text-lg">

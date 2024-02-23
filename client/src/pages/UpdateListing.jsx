@@ -156,7 +156,7 @@ const UpdateListing = () => {
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`listings/${data._id}`);
+      navigate(`/listings/${params.listingId}`);
     } catch (error) {
       setError(error.message);
       setIsCreating(false);
@@ -176,7 +176,7 @@ const UpdateListing = () => {
             type="text"
             placeholder="Name"
             maxLength="20"
-            minLength="10"
+            minLength="5"
             onChange={handleChange}
             value={formData.name}
             className="border p-3 rounded-lg"
