@@ -1,8 +1,9 @@
-import { set } from "mongoose";
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { FaLocationDot } from "react-icons/fa6";
+import { FaBed, FaBath, FaCar } from "react-icons/fa";
+import { MdOutlineChair } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
-import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
 
@@ -54,15 +55,60 @@ const Listing = () => {
       )}
       {listing && !error && !loading && (
         <>
-          <Swiper navigation>
+          <Swiper modules={[Navigation]} navigation>
             {listing.imageUrls.map((url) => (
               <SwiperSlide key={url} className="flex justify-center">
                 <div
                   style={{ backgroundImage: `url(${url})`, width: `100%` }}
-                  className="h-[500px] bg-cover bg-center bg-no-repeat"></div>
+                  className="sm:h-[calc(28vw)] h-[calc(55vw)] bg-cover bg-center bg-no-repeat"></div>
               </SwiperSlide>
             ))}
           </Swiper>
+          <div className="flex flex-col p-3 max-w-6xl mx-auto gap-1">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <h1 className="text-2xl font-bold">
+                {listing.name} - ₹{listing.regularPrice}
+                {listing.type == "rent" ? "/ per month" : ""}
+              </h1>
+              <p className="px-4 py-1 bg-[#1f2249] w-fit rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out">
+                Contact Dealer
+              </p>
+            </div>
+            <h3>
+              <FaLocationDot className="inline -mt-1 mr-1" color="green" />
+              {listing.address}
+            </h3>
+            <div className="flex gap-4">
+              <h6 className="px-4 py-1 bg-[#1f2249] cursor-default w-fit rounded-md text-white">
+                {listing.type == "rent" ? "For Rent" : "For Sale"}
+              </h6>
+              <h6 className="px-4 py-1 bg-green-600 cursor-default w-fit rounded-md text-white">
+                ₹{listing.regularPrice - listing.discountedPrice} Discount
+              </h6>
+            </div>
+            <p>
+              <strong>Description:&nbsp;</strong>
+              {listing.description}
+            </p>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <p>
+                <FaBed className="inline -mt-1 mr-2" color="brown" />
+                {listing.bedrooms} Beds
+              </p>
+              <p>
+                <FaBath className="inline -mt-1 mr-2" color="brown" />
+                {listing.bathrooms} Baths
+              </p>
+              <p>
+                <FaCar className="inline -mt-1 mr-2" color="brown" />
+                {listing.parking ? "Parking Available" : "No Parking Available"}
+              </p>
+              <p>
+                <MdOutlineChair className="inline -mt-1 mr-2" color="brown" />
+                {listing.furnished ? "Furnished" : "Not furnished"}
+              </p>
+            </div>
+          </div>
         </>
       )}
     </main>
