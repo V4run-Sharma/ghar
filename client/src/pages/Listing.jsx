@@ -6,12 +6,17 @@ import { MdOutlineChair } from "react-icons/md";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
+import { useSelector } from "react-redux";
+import Contact from "../components/Contact";
 
 const Listing = () => {
   const params = useParams();
+  const { currentUser } = useSelector((state) => state.user);
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [contactForm, setContactForm] = useState(false);
   const [error, setError] = useState(false);
+
   useEffect(() => {
     const fetchListing = async () => {
       try {
@@ -65,14 +70,23 @@ const Listing = () => {
             ))}
           </Swiper>
           <div className="flex flex-col p-3 max-w-6xl mx-auto gap-1">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <h1 className="text-2xl font-bold">
-                {listing.name} - ₹{listing.regularPrice}
-                {listing.type == "rent" ? "/ per month" : ""}
-              </h1>
-              <p className="px-4 py-1 bg-[#1f2249] w-fit rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out">
-                Contact Dealer
-              </p>
+            <div className="flex flex-wrap items-start gap-x-4 gap-y-2">
+              <div className="flex gap-x-4 items-center gap-y-2">
+                <h1 className="text-2xl font-bold">
+                  {listing.name} - ₹{listing.regularPrice}
+                  {listing.type == "rent" ? "/ per month" : ""}
+                </h1>
+                {currentUser &&
+                  listing.userRef !== currentUser._id &&
+                  !contactForm && (
+                    <p
+                      onClick={() => setContactForm(true)}
+                      className="px-4 py-2 bg-[#1f2249] w-fit h-fit rounded-md text-white cursor-pointer hover:opacity-80 transition-all ease-in-out">
+                      Contact
+                    </p>
+                  )}
+              </div>
+              {contactForm && <Contact listing={listing} />}
             </div>
             <h3>
               <FaLocationDot className="inline -mt-1 mr-1" color="green" />
