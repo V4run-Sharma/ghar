@@ -80,6 +80,7 @@ export const getListings = async (req, res, next) => {
       $or: [
         { name: { $regex: searchTerm, $options: "i" } },
         { description: { $regex: searchTerm, $options: "i" } },
+        { address: { $regex: searchTerm, $options: "i" } },
       ],
       offer,
       furnished,

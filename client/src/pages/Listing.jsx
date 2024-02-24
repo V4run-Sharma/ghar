@@ -39,6 +39,8 @@ const Listing = () => {
     fetchListing();
   }, [params.listingId]);
 
+  const discount = listing?.regularPrice - listing?.discountedPrice;
+
   return (
     <main>
       {loading && (
@@ -73,7 +75,8 @@ const Listing = () => {
             <div className="flex flex-wrap items-start gap-x-4 gap-y-2">
               <div className="flex gap-x-4 items-center gap-y-2">
                 <h1 className="text-2xl font-bold">
-                  {listing.name} - ₹{listing.regularPrice}
+                  {listing.name} - ₹
+                  {listing.regularPrice.toLocaleString("en-IN")}
                   {listing.type == "rent" ? "/ per month" : ""}
                 </h1>
                 {currentUser &&
@@ -97,7 +100,7 @@ const Listing = () => {
                 {listing.type == "rent" ? "For Rent" : "For Sale"}
               </h6>
               <h6 className="px-4 py-1 bg-green-600 cursor-default w-fit rounded-md text-white">
-                ₹{listing.regularPrice - listing.discountedPrice} Discount
+                ₹ {discount.toLocaleString("en-IN")} off
               </h6>
             </div>
             <p>

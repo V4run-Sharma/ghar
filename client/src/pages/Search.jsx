@@ -1,6 +1,7 @@
 import { set } from "mongoose";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ListingCard from "../components/ListingCard";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -205,10 +206,28 @@ const Search = () => {
           </button>
         </form>
       </div>
-      <div className="md:min md:p-8 min-[425px]:p-4 p-2">
-        <h1 className="sm:text-3xl text-xl text-[#1f2249] font-bold">
-          Results:
-        </h1>
+      <div className="sm:p-8 p-4 flex flex-col gap-4">
+        <div className="flex flex-col sm:gap-8 gap-4 items-start">
+          <h1 className="sm:text-3xl text-xl text-[#1f2249] font-bold">
+            Results:
+          </h1>
+          {!loading && listings.length === 0 && (
+            <h1 className="text-xl inline-block text-red-600 opacity-80 font-bold">
+              No listings found
+            </h1>
+          )}
+          {loading && (
+            <h1 className="text-xl inline-block text-[#1f2249] opacity-50 font-bold">
+              Loading...
+            </h1>
+          )}
+        </div>
+        <div className="flex flex-wrap sm:gap-8 gap-4">
+          {!loading &&
+            listings.map((listing) => (
+              <ListingCard key={listing._id} listing={listing} />
+            ))}
+        </div>
       </div>
     </main>
   );

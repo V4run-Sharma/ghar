@@ -291,7 +291,7 @@ const Profile = () => {
               <div
                 key={listing._id}
                 id={listing._id}
-                className="flex sm:flex-row break-words flex-col sm:justify-between items-center hover:bg-white gap-4 border-[1px] border-gray-300 hover:border-[#1f2249] transition-all ease-in-out p-3 rounded-lg cursor-pointer box-border">
+                className="flex sm:flex-row break-words flex-col sm:justify-between items-center hover:bg-white gap-4 border-[1px] border-gray-300 hover:shadow-md transition-all ease-in-out p-3 rounded-lg cursor-pointer box-border">
                 <div className="flex sm:flex-row box-border flex-col gap-4">
                   <img
                     src={listing.imageUrls}
@@ -301,7 +301,7 @@ const Profile = () => {
                   <div className="flex flex-col justify-between">
                     <div className="">
                       <Link to={`/listings/${listing._id}`}>
-                        <h3 className="text-lg hover:underline">
+                        <h3 className="truncate text-lg hover:underline">
                           {listing.name}
                         </h3>
                       </Link>
@@ -309,8 +309,10 @@ const Profile = () => {
                     </div>
                     <p className="text-lg">
                       {listing.type === "sale"
-                        ? `₹${listing.discountedPrice}`
-                        : `₹${listing.discountedPrice} per month`}
+                        ? `₹${listing.discountedPrice.toLocaleString("en-IN")}`
+                        : `₹${listing.discountedPrice?.toLocaleString(
+                            "en-IN"
+                          )} / month`}
                     </p>
                   </div>
                 </div>

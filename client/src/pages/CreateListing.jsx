@@ -159,7 +159,7 @@ const CreateListing = () => {
           <input
             type="text"
             placeholder="Name"
-            maxLength="20"
+            maxLength="50"
             minLength="5"
             onChange={handleChange}
             value={formData.name}
