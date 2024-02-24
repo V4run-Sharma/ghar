@@ -192,14 +192,14 @@ const Profile = () => {
   // request.resource.contentType.matches('image/.*')
 
   return (
-    <main className="p-3 max-w-lg mx-auto flex flex-col justify-center">
+    <main className="p-3 max-w-lg mx-auto flex flex-col justify-center sm:mt-16 mt-8">
       <div className="p-3 max-w-lg flex flex-col justify-center">
         <h1 className="text-3xl text-center text-[#1f2249] font-bold my-4">
           Profile
         </h1>
         <form
           onSubmit={handleUpdateUser}
-          className="flex flex-col gap-4 max-w-lg">
+          className="flex flex-col sm:gap-4 gap-2 max-w-lg">
           <input
             type="file"
             ref={fileRef}
@@ -251,7 +251,7 @@ const Profile = () => {
             {loading ? "UPDATING..." : "UPDATE"}
           </button>
         </form>
-        <div className="flex flex-wrap justify-between text-white mt-4">
+        <div className="flex flex-wrap justify-between text-white sm:mt-4 mt-2">
           <p
             onClick={handleDeleteUser}
             className="bg-red-600 px-4 py-2 w-fit h-fit rounded-lg hover:opacity-80 cursor-pointer">
@@ -270,7 +270,7 @@ const Profile = () => {
           {error ? error : null}
         </p>
       </div>
-      <div className="p-3 max-w-lg flex flex-col ">
+      <div className="p-3 max-w-lg -mt-2 flex flex-col ">
         <Link to="/listings/create" className="min-w-full">
           <button className="bg-green-600 text-white rounded-lg p-3 transition-all min-w-full ease-in-out hover:opacity-80">
             Create Listing

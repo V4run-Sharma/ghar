@@ -5,7 +5,7 @@ const ListingCard = ({ listing }) => {
   return (
     <Link
       to={`/listings/${listing._id}`}
-      className="hover:shadow-md transition-shadow overflow-hidden rounded-lg w-full md:w-[330px] border-2 animate-fade-in">
+      className="hover:shadow-md transition-shadow overflow-hidden rounded-lg w-full md:w-[280px] border-2 animate-fade-in">
       <img
         src={listing.imageUrls[0] || "/ghar.png"}
         alt={listing.name}
@@ -22,7 +22,7 @@ const ListingCard = ({ listing }) => {
         </p>
         <p className="font-semibold text-xl mt-2">
           ₹{" "}
-          {offer
+          {listing.offer
             ? listing.discountedPrice.toLocaleString("en-IN")
             : listing.regularPrice.toLocaleString("en-IN")}{" "}
           {listing.type === "rent" ? "/ month" : ""}

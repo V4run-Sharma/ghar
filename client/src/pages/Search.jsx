@@ -117,7 +117,7 @@ const Search = () => {
   };
 
   return (
-    <main className="w-screen flex md:flex-row flex-col">
+    <main className="w-screen flex md:flex-row flex-col mt-16">
       <div className="md:min-h-screen sm:min-w-[400px] md:max-w-[400px] border-b-2 md:border-r-2 md:p-8 min-[425px]:p-4 p-2">
         <form onSubmit={handleSubmit} className=" flex flex-col sm:gap-6 gap-2">
           <div className="flex items-center gap-2">

@@ -42,7 +42,7 @@ const Listing = () => {
   const discount = listing?.regularPrice - listing?.discountedPrice;
 
   return (
-    <main>
+    <main className="mt-16">
       {loading && (
         <p className="text-center text-3xl font-bold mt-64 text-[#1f2249]">
           Loading...
@@ -107,11 +107,11 @@ const Listing = () => {
                 </h6>
               )}
             </div>
-            <p>
+            <p className="sm:leading-normal leading-tight">
               <strong>Description:&nbsp;</strong>
               {listing.description}
             </p>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-4">
               <p>
                 <FaBed className="inline -mt-1 mr-2" color="brown" />
                 {listing.bedrooms} Beds

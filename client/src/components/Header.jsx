@@ -25,7 +25,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="bg-[#1f2249] shadow-md">
+    <header className={`bg-[#1f2249] shadow-lg fixed top-0 w-full z-20`}>
       <div className="flex justify-between items-center max-w-7xl mx-auto p-3">
         <h1 className="text-white font-bold text-xl sm:text-3xl">
           <Link to="/">Ghar</Link>
