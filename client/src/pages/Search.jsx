@@ -7,6 +7,7 @@ const Search = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
   const [searchData, setSearchData] = useState({
     searchTerm: "",
     type: "all",
@@ -80,12 +81,25 @@ const Search = () => {
       const searchQuery = urlParams.toString();
       const response = await fetch(`/api/listings/get?${searchQuery}`);
       const data = await response.json();
+      if (data.length > 8) setShowMore(true);
       setListings(data);
       setLoading(false);
       console.log(data);
     };
     fetchListings();
   }, [location.search]);
+
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await fetch(`/api/listings/get?${searchQuery}`);
+    const data = await res.json();
+    if (data.length < 8) setShowMore(false);
+    setListings([...listings, ...data]);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -98,6 +112,7 @@ const Search = () => {
     urlParams.set("sort", searchData.sort);
     urlParams.set("order", searchData.order);
     const searchQuery = urlParams.toString();
+    setShowMore(false);
     navigate(`/search?${searchQuery}`);
   };
 
@@ -228,6 +243,13 @@ const Search = () => {
               <ListingCard key={listing._id} listing={listing} />
             ))}
         </div>
+        {showMore && (
+          <button
+            onClick={onShowMoreClick}
+            className="p-3 w-fit bg-green-600 hover:opacity-80 transition-all ease-in-out rounded-lg text-white">
+            Show more
+          </button>
+        )}
       </div>
     </main>
   );

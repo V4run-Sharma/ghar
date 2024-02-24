@@ -65,9 +65,11 @@ const Listing = () => {
           <Swiper modules={[Navigation]} navigation>
             {listing.imageUrls.map((url) => (
               <SwiperSlide key={url} className="flex justify-center">
-                <div
-                  style={{ backgroundImage: `url(${url})`, width: `100%` }}
-                  className="sm:h-[calc(28vw)] h-[calc(55vw)] bg-cover bg-center bg-no-repeat"></div>
+                <img
+                  src={url}
+                  alt={listing.name}
+                  className="sm:h-[calc(28vw)] h-[calc(55vw)] w-full bg-cover bg-center bg-no-repeat"
+                />
               </SwiperSlide>
             ))}
           </Swiper>

@@ -7,7 +7,7 @@ const ListingCard = ({ listing }) => {
       to={`/listings/${listing._id}`}
       className="hover:shadow-md transition-shadow overflow-hidden rounded-lg w-full md:w-[330px] border-2 animate-fade-in">
       <img
-        src={listing.imageUrls[0]}
+        src={listing.imageUrls[0] || "/ghar.png"}
         alt={listing.name}
         className="h-[200px] w-full object-cover hover:scale-105 transition-all ease-in-out"
       />
