@@ -1,4 +1,4 @@
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaBars } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -7,6 +7,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -24,15 +25,25 @@ const Header = () => {
     }
   }, []);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  console.log(isMenuOpen);
   return (
-    <header className={`bg-[#1f2249] shadow-lg fixed top-0 w-full z-20`}>
+    <header
+      className={`bg-[#1f2249] shadow-lg fixed top-0 w-full ${
+        isMenuOpen ? "h-16 sm:h-fit pt-1" : ""
+      } z-20`}>
       <div className="flex justify-between items-center max-w-7xl mx-auto p-3">
         <h1 className="text-white font-bold text-xl sm:text-3xl">
           <Link to="/">Ghar</Link>
         </h1>
         <form
           onSubmit={handleSubmit}
-          className="bg-slate-100 py-2 px-3 sm:p-3 rounded-lg flex items-center">
+          className={`${
+            isMenuOpen ? "sm:flex hidden" : "flex"
+          } bg-slate-100 py-2 px-3 sm:p-3 rounded-lg items-center`}>
           <input
             type="text"
             placeholder="Search..."
@@ -45,31 +56,38 @@ const Header = () => {
             className="text-[#1f2249] text-xl cursor-pointer"
           />
         </form>
-        <ul className="text-[#cbd4e5] flex items-center sm:gap-8">
-          <Link to="/">
-            <li className="hidden sm:inline cursor-pointer hover:underline  hover:text-white">
-              HOME
+        <div className="flex gap-4 items-center">
+          <div className="sm:hidden ">
+            <FaBars
+              className="text-white text-xl cursor-pointer"
+              onClick={toggleMenu}
+            />
+          </div>
+          <ul
+            className={`text-[#cbd4e5] flex items-center sm:gap-8 gap-4 ${
+              isMenuOpen ? "flex" : "hidden sm:flex"
+            }`}>
+            <li className="cursor-pointer hover:underline  hover:text-white">
+              <Link to="/">Home</Link>
             </li>
-          </Link>
-          <Link to="/about">
-            <li className="hidden sm:inline cursor-pointer hover:underline  hover:text-white">
-              ABOUT
+            <li className="cursor-pointer hover:underline  hover:text-white">
+              <Link to="/about">About</Link>
             </li>
-          </Link>
-          <Link to="/profile">
-            {currentUser ? (
-              <img
-                className="rounded-full h-9 w-9 object-cover"
-                src={currentUser.avatar}
-                alt="profile pic"
-              />
-            ) : (
-              <li className="hidden sm:inline cursor-pointer hover:underline  hover:text-white">
-                Sign In
-              </li>
-            )}
-          </Link>
-        </ul>
+            <li className="cursor-pointer hover:underline  hover:text-white">
+              <Link to="/profile">
+                {currentUser ? (
+                  <img
+                    className="rounded-full h-9 w-9 object-cover"
+                    src={currentUser.avatar}
+                    alt="profile pic"
+                  />
+                ) : (
+                  "Sign In"
+                )}
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </header>
   );
