@@ -68,7 +68,7 @@ const Listing = () => {
                 <img
                   src={url}
                   alt={listing.name}
-                  className="sm:h-[calc(28vw)] h-[calc(55vw)] w-full bg-cover bg-center bg-no-repeat"
+                  className="sm:h-[calc(28vw)] h-[calc(55vw)] w-full object-cover object-center"
                 />
               </SwiperSlide>
             ))}
