@@ -5,17 +5,8 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import listingRoutes from "./routes/listingRoutes.js";
-
-const app = express();
-app.use(express.json());
-app.use(cookieParser());
+import path from "path";
 dotenv.config();
-
-//---------------------------------------------------------------------------------------
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`);
-});
-//---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
 mongoose
@@ -26,6 +17,26 @@ mongoose
   .catch((err) => {
     console.log(err);
   });
+//---------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------
+const __dirname = path.resolve();
+//---------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------
+const app = express();
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
+//---------------------------------------------------------------------------------------
+
+//---------------------------------------------------------------------------------------
+app.listen(process.env.PORT, () => {
+  console.log(`Server is running on http://localhost:${process.env.PORT}`);
+});
 //---------------------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------------------
@@ -44,3 +55,4 @@ app.use((err, req, res, next) => {
     message,
   });
 });
+//---------------------------------------------------------------------------------------
