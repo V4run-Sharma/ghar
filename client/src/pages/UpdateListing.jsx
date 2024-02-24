@@ -367,7 +367,7 @@ const UpdateListing = () => {
             ))}
           <button
             disabled={isCreating || isUploading}
-            className="p-3 border border-[#1f2249] rounded-lg bg-[#1f2249] text-white hover:opacity-80 transition-all ease-in-out disabled:opacity-50">
+            className="p-3 rounded-lg bg-[#1f2249] text-white hover:opacity-80 transition-all ease-in-out disabled:opacity-50">
             {isCreating ? "UPDATING..." : "UPDATE LISTING"}
           </button>
           {error && <p className="text-red-600 text-sm">{error}</p>}
