@@ -156,7 +156,7 @@ const UpdateListing = () => {
       if (data.success === false) {
         setError(data.message);
       }
-      navigate(`/listings/${params.listingId}`);
+      navigate(`../listings/${params.listingId}`);
     } catch (error) {
       setError(error.message);
       setIsCreating(false);

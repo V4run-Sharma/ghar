@@ -77,7 +77,7 @@ const Listing = () => {
                 <h1 className="text-2xl font-bold">
                   {listing.name} - ₹
                   {listing.regularPrice.toLocaleString("en-IN")}
-                  {listing.type == "rent" ? "/ per month" : ""}
+                  {listing.type == "rent" ? " / month" : ""}
                 </h1>
                 {currentUser &&
                   listing.userRef !== currentUser._id &&
@@ -99,9 +99,11 @@ const Listing = () => {
               <h6 className="px-4 py-1 bg-[#1f2249] cursor-default w-fit rounded-md text-white">
                 {listing.type == "rent" ? "For Rent" : "For Sale"}
               </h6>
-              <h6 className="px-4 py-1 bg-green-600 cursor-default w-fit rounded-md text-white">
-                ₹ {discount.toLocaleString("en-IN")} off
-              </h6>
+              {discount > 0 && (
+                <h6 className="px-4 py-1 bg-green-600 cursor-default w-fit rounded-md text-white">
+                  ₹ {discount.toLocaleString("en-IN")} off
+                </h6>
+              )}
             </div>
             <p>
               <strong>Description:&nbsp;</strong>
